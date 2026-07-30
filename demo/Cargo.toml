@@ -1,0 +1,23 @@
+# cmx-rust-sheet 演示：M99 多 sheet 综合场景（后端构建 + 导出 XLSX/JSON）。
+# 对标 cmx-mega-sheet/demo/specs/spec-m99.js —— 六 sheet：迷你图 / 行分组 / 列分组 /
+# 行列同时分组 / 字体·背景·边框 / 图表 11 类。纯后端、无渲染，产物可用 Excel 打开。
+[package]
+name = "m99-demo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+name = "m99_demo"
+path = "src/lib.rs"
+
+[[bin]]
+name = "m99-demo"
+path = "src/main.rs"
+
+[dependencies]
+cmx-rust-sheet.workspace = true
+sheet-core.workspace = true
+sheet-io.workspace = true
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }

@@ -1,0 +1,38 @@
+# cmx-rust-sheet —— 纯后端电子表格引擎（Rust）。
+# 对标 cmx-megasheet（TS）的 core / formula / io 三层，去除画布渲染与鼠标交互。
+# 拥抱成熟 crate 生态，不重复造轮子（详见 docs/方案.html §3.1）。
+[workspace]
+resolver = "2"
+members = [
+    "crates/sheet-core",
+    "crates/sheet-formula",
+    "crates/sheet-io",
+    "crates/cmx-rust-sheet",
+    "demo",
+    "test",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+authors = ["cmx"]
+repository = "cmx-rust-sheet"
+
+# 依赖统一版本管理。各 crate 按需引用（core 轻、io 重，分层收口）。
+[workspace.dependencies]
+# —— 领域内 crate ——
+sheet-core = { path = "crates/sheet-core", version = "0.1.0" }
+sheet-formula = { path = "crates/sheet-formula", version = "0.1.0" }
+sheet-io = { path = "crates/sheet-io", version = "0.1.0" }
+cmx-rust-sheet = { path = "crates/cmx-rust-sheet", version = "0.1.0" }
+# —— 生态基础设施（按里程碑逐步接入）——
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+chrono = { version = "0.4", default-features = false, features = ["alloc"] }
+regex = "1"
+thiserror = "2"
+
+[profile.release]
+opt-level = 3
+lto = "thin"

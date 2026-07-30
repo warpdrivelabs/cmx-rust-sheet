@@ -1,0 +1,17 @@
+# cmx-rust-sheet —— 门面 umbrella crate。
+# 重导出 core/formula/io 三层 + 高层 Workbook 便捷 API + VERSION + rayon 批量并行。
+# 唯一新依赖是 rayon（多表并行只在门面层）；三层各自的依赖不上浮（见 docs/方案.html 依赖纪律）。
+[package]
+name = "cmx-rust-sheet"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "纯后端电子表格引擎——对标 cmx-megasheet（TS）的 core/formula/io 三层，去除画布渲染。"
+
+[dependencies]
+sheet-core.workspace = true
+sheet-formula.workspace = true
+sheet-io.workspace = true
+rayon = "1"

@@ -1,0 +1,11 @@
+[package]
+name = "sheet-formula"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "cmx-rust-sheet 公式引擎：词法 · Pratt 语法 · 求值 · 依赖图/三色环 · 内置函数 · 报表取数函数。对标 cmx-megasheet formula 层。"
+
+[dependencies]
+sheet-core = { workspace = true }
+regex = { workspace = true }

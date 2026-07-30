@@ -1,0 +1,16 @@
+[package]
+name = "sheet-io"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "cmx-rust-sheet IO 层：中性快照（serde JSON，字节级 parity）+ XLSX 往返（后续）。对标 cmx-megasheet io 层。"
+
+[dependencies]
+sheet-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+printpdf = { version = "0.12.5", default-features = false }
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
+quick-xml = "0.41.0"
+regex.workspace = true

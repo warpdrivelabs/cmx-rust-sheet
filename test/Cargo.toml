@@ -1,0 +1,22 @@
+# M99 集成测试：对标 cmx-mega-sheet/test 的断言层（同源 spec-m99.js 的 checks）。
+# 只测后端构建 + XLSX/JSON 往返，不涉渲染。
+[package]
+name = "m99-test"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+# 无库/无 bin：仅 tests/ 下的集成测试。
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+cmx-rust-sheet.workspace = true
+sheet-core.workspace = true
+sheet-io.workspace = true
+m99-demo = { path = "../demo" }
+
+[dev-dependencies]
+cmx-rust-sheet.workspace = true
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }

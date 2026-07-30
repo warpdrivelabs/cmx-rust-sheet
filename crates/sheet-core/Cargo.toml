@@ -1,0 +1,14 @@
+[package]
+name = "sheet-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "cmx-rust-sheet 核心数据模型：坐标 · 区域 · 稀疏矩阵 · 样式级联 · 单元格 · 工作表/簿。对标 cmx-megasheet core 层。"
+
+[dependencies]
+serde = { workspace = true }
+regex = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
