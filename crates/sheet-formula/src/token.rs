@@ -223,7 +223,11 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FormulaLexError> {
             let clen = text.chars().count();
             // 消歧：紧跟 '(' 的「像引用的标识符」实为函数调用（LOG10(...)）。
             let next_is_paren = i + clen < n && chars[i + clen] == '(';
-            if !next_is_paren {
+            // 消歧：紧跟标识符字母/下划线者，是更长的标识符（DEC2BIN、BIN2HEX 等函数名
+            // 中段含数字，ref_re 会先贪配出 DEC2 段）——不当引用，落到下方 ident 分支整取。
+            let next_is_ident =
+                i + clen < n && (chars[i + clen].is_ascii_alphabetic() || chars[i + clen] == '_');
+            if !next_is_paren && !next_is_ident {
                 tokens.push(Token::new(TokenType::Ref, text, i));
                 i += clen;
                 continue;
@@ -426,5 +430,24 @@ mod tests {
                 TokenType::RParen
             ]
         );
+    }
+}
+
+#[cfg(test)]
+mod digit_mid_name_tests {
+    use super::*;
+    #[test]
+    fn func_name_with_mid_digit_is_one_ident() {
+        // DEC2BIN/BIN2HEX 中段含数字，曾被 ref_re 贪配出 DEC2 段致解析失败。
+        for name in ["DEC2BIN", "BIN2HEX", "HEX2DEC", "OCT2BIN"] {
+            let toks = tokenize(&format!("{name}(100)")).unwrap();
+            assert_eq!(toks[0].ty, TokenType::Ident, "{name} 应为单一 Ident");
+            assert_eq!(toks[0].text, name);
+            assert_eq!(toks[1].ty, TokenType::LParen);
+        }
+        // 真单元格引用后接函数不受影响
+        let t = tokenize("A1+SUM(B1:B2)").unwrap();
+        assert_eq!(t[0].ty, TokenType::Ref);
+        assert_eq!(t[0].text, "A1");
     }
 }

@@ -38,7 +38,7 @@ quick-xml · printpdf · rayon…），不重复造轮子，把精力全押在�
 | RS-M26 | CSV 导入导出 + 数据工具（文本分列 · 删除重复 · 合并计算） | ✅ |
 | 门面 | `cmx-rust-sheet` umbrella：三层重导出 + `WorkbookExt` 高层 API + `VERSION` + rayon 批量并行 | ✅ |
 
-当前：**477 测试绿** · clippy 零警告 · fmt 干净。RS-M0→M26 全里程碑 + 门面 umbrella 落地；函数库 **272** 与 TS 对等。剩最终跨引擎 parity 硬化在途。
+当前：**513 测试绿** · clippy 零警告 · fmt 干净。RS-M0→M26 全里程碑 + 门面 umbrella 落地；函数库 **335** 与 TS 逐字对等（跨引擎 15 例值 byte-identical 实测）。工程族（进制/位运算/ERF/贝塞尔/CONVERT/复数）+ 日期扩容（YEARFRAC/WORKDAY/WEEKNUM…）已补齐。
 
 ## 布局
 

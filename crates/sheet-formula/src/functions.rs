@@ -734,6 +734,10 @@ impl BuiltinRegistry {
         for (name, imp) in crate::builtins_m17::m17_builtins() {
             fns.insert(name.to_string(), imp);
         }
+        // 工程族 + 日期扩容（BIN2DEC/BITAND/ERF/BESSEL/CONVERT/IM* + DAYS/YEARFRAC/…）。
+        for (name, imp) in crate::builtins_eng::eng_builtins() {
+            fns.insert(name.to_string(), imp);
+        }
         BuiltinRegistry {
             fns,
             volatiles: HashSet::new(),

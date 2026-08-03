@@ -12,6 +12,7 @@
 //!  - [`depgraph`]：依赖图 + 拓扑序 + 三色环检测。
 //!  - [`engine`]：编排层，接 Workbook 全量/增量重算（线程化 `&mut Workbook`）。
 
+pub mod builtins_eng;
 pub mod builtins_m17;
 pub mod builtins_m8;
 pub mod custom_fn;
