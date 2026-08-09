@@ -127,6 +127,12 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FormulaLexError> {
             continue;
         }
 
+        // 隐式交集运算符 '@'（Excel 导入公式可能带前导/内嵌 @f(...)）——标量引擎无意义，跳过。
+        if c == '@' {
+            i += 1;
+            continue;
+        }
+
         // 字符串 "..."（内部 "" 转义为一个 "）
         if c == '"' {
             let mut j = i + 1;
@@ -449,5 +455,18 @@ mod digit_mid_name_tests {
         let t = tokenize("A1+SUM(B1:B2)").unwrap();
         assert_eq!(t[0].ty, TokenType::Ref);
         assert_eq!(t[0].text, "A1");
+    }
+}
+
+#[cfg(test)]
+mod at_operator_tests {
+    use super::*;
+    #[test]
+    fn leading_at_is_skipped() {
+        // 隐式交集 @ 被跳过：@ROW()-3 与 ROW()-3 token 流一致（首 token 为 ROW）。
+        let toks = tokenize("@ROW()-3").unwrap();
+        assert_eq!(toks[0].ty, TokenType::Ident);
+        assert_eq!(toks[0].text, "ROW");
+        assert_eq!(toks[1].ty, TokenType::LParen);
     }
 }

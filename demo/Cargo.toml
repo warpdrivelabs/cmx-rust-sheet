@@ -16,6 +16,10 @@ path = "src/lib.rs"
 name = "m99-demo"
 path = "src/main.rs"
 
+[[bin]]
+name = "gen-artifacts"
+path = "src/bin/gen-artifacts.rs"
+
 [dependencies]
 cmx-rust-sheet.workspace = true
 sheet-core.workspace = true

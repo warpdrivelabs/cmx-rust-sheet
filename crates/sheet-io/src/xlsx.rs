@@ -19,7 +19,7 @@ use zip::write::SimpleFileOptions;
 use zip::{ZipArchive, ZipWriter};
 
 use sheet_core::address::{col_to_label, format_addr, parse_addr};
-use sheet_core::cell::CellValue;
+use sheet_core::cell::{sanitize_imported_formula, CellValue};
 use sheet_core::outline::OutlineAxis;
 use sheet_core::style::{BorderEdge, BorderLineStyle, Borders, HAlign, Style, VAlign};
 use sheet_core::workbook::Workbook;
@@ -1461,7 +1461,7 @@ fn parse_sheet_xml(xml: &str, name: &str, sst: &[String], styles: &ParsedStyles)
                 rich: None,
             };
             if let Some(fm) = f_re.captures(c_inner) {
-                cell.f = Some(unesc(&fm[1]));
+                cell.f = Some(sanitize_imported_formula(&unesc(&fm[1])));
             }
             if let Some(is_m) = is_re.captures(c_inner) {
                 cell.v = Some(CellValue::Text(unesc(&is_m[1])));

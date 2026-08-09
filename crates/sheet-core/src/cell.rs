@@ -157,6 +157,31 @@ pub fn normalize_formula(formula: &str) -> String {
     }
 }
 
+/// 清洗「从 XLSX/SSJSON 导入的公式串」里的 Excel 序列化伪前缀，避免引擎把它们当未知
+/// 函数名报 #NAME?。剥除：前导 '@'（隐式交集，标量引擎无意义）+ 函数名前的
+/// `_xlfn.` / `_xlws.`（含叠写 `_xlfn._xlws.`，Excel 对 2007 后新函数的内部前缀）。
+/// 幂等。对齐 TS sanitizeImportedFormula。
+pub fn sanitize_imported_formula(formula: &str) -> String {
+    let mut f = normalize_formula(formula);
+    if f.is_empty() {
+        return f;
+    }
+    // 反复剥前导 '@'（Excel 偶有 @@）
+    while f.starts_with('@') {
+        f = f[1..].to_string();
+    }
+    // 剥 _xlfn. / _xlws.（含 _xlfn._xlws. 叠写），大小写容错
+    loop {
+        let lower = f.to_ascii_lowercase();
+        if let Some(pos) = lower.find("_xlfn.").or_else(|| lower.find("_xlws.")) {
+            f.replace_range(pos..pos + 6, "");
+        } else {
+            break;
+        }
+    }
+    f.trim().to_string()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -190,6 +215,29 @@ mod tests {
     #[test]
     fn normalize_formula_empty() {
         assert_eq!(normalize_formula(""), "");
+    }
+
+    #[test]
+    fn sanitize_imported_strips_xlfn_and_at() {
+        assert_eq!(sanitize_imported_formula("=ROW()-3"), "ROW()-3");
+        assert_eq!(sanitize_imported_formula("_xlfn.ROW()-3"), "ROW()-3");
+        assert_eq!(sanitize_imported_formula("@ROW()-3"), "ROW()-3");
+        assert_eq!(sanitize_imported_formula("@@ROW()"), "ROW()");
+        assert_eq!(
+            sanitize_imported_formula("_xlfn.XLOOKUP(1,A:A,B:B)"),
+            "XLOOKUP(1,A:A,B:B)"
+        );
+        assert_eq!(
+            sanitize_imported_formula("_xlfn._xlws.ANCHORARRAY(A1)"),
+            "ANCHORARRAY(A1)"
+        );
+        assert_eq!(
+            sanitize_imported_formula("=_xlfn.CONCAT(A1,B1)"),
+            "CONCAT(A1,B1)"
+        );
+        assert_eq!(sanitize_imported_formula(""), "");
+        // normalize_formula 不碰 _xlfn.（职责区分）
+        assert_eq!(normalize_formula("_xlfn.ROW()"), "_xlfn.ROW()");
     }
 
     #[test]

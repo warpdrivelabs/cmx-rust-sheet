@@ -37,7 +37,9 @@ pub use address::{
     col_to_label, format_addr, format_range, label_to_col, parse_addr, parse_range, CellCoord,
     RangeCoord,
 };
-pub use cell::{normalize_formula, CellData, CellValue, RichFont, RichRun, RichText};
+pub use cell::{
+    normalize_formula, sanitize_imported_formula, CellData, CellValue, RichFont, RichRun, RichText,
+};
 pub use chart::{extract_chart_data, ChartData, ChartSeries};
 pub use clipboard::{
     parse_clipboard_html, parse_tsv, serialize_html, serialize_tsv, Clipboard, PasteContent,
